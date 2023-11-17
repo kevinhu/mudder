@@ -4,6 +4,21 @@ use std::cmp::Ordering;
 use std::collections::HashMap;
 use std::num::NonZeroUsize;
 
+/// Performs long division on a vector of numerators with a single denominator.
+/// Element-wise, each numerator is divided by the denominator, with any remainder carried to the next iteration.
+///
+/// # Arguments
+///
+/// * `numerator` - A vector of unsigned integers representing the numerators.
+///
+/// * `denominator` - An unsigned integer representing the denominator.
+///
+/// * `base` - The base to be multiplied with the remainder. This resembles the number base in positional numeral systems.
+///
+/// # Returns
+///
+/// * A tuple consisting of a vector of results from each numerator divided by the denominator and
+///   the final remainder after iterating over all numerators.
 pub fn long_div(numerator: Vec<usize>, denominator: usize, base: usize) -> (Vec<usize>, usize) {
     let mut result = Vec::new();
     let mut remainder = 0;
@@ -30,6 +45,26 @@ pub struct DivisionResult {
     denominator: usize,
 }
 
+/// Performs the subtraction of two equal-length vectors in the context of a specific number base, and handles the borrowing as needed.
+/// This function operates on a digit by digit basis and each digit represents a value in a given base.
+///
+/// # Arguments
+///
+/// * `a` - A vector of unsigned integers, representing the minuend.
+///
+/// * `b` - A vector of unsigned integers, of equal length to 'a', representing the subtrahend.
+///
+/// * `base` - The base of the number system being used, resembles the number base in positional numeral systems.
+///
+/// * `remainder` - An optional tuple of unsigned integers. If provided, these values are appended to vectors 'a' and 'b' respectively.
+///
+/// * `denominator` - An unsigned integer representing the denominator in the case the remainder is involved in calculations.
+///
+/// # Returns
+///
+/// * A result type:
+///   - `Ok` variant contains a tuple consisting of the resulting vector after the subtraction operation and a single unsigned integer remainder.
+///   - `Err` variant contains a string message indicating an error (Mismatch length, negative result, or failure to borrow).
 fn long_sub_same_len(
     a: &Vec<usize>,
     b: &Vec<usize>,
@@ -93,6 +128,25 @@ fn long_sub_same_len(
     }
 }
 
+/// Performs addition on two equal-length vectors and handles carrying over values based on the base of the numeric system.
+///
+/// # Arguments
+///
+/// * `a` - A vector of unsigned integers to be added, representing the first operand.
+///
+/// * `b` - A vector of unsigned integers to be added, of equal length to 'a', representing the second operand.
+///
+/// * `base` - The base of the number system being used. This resembles the number base in positional numeral systems.
+///
+/// * `remainder` - An unsigned integer. If it's greater or equal to the denominator, it creates a carry for the addition operation.
+///
+/// * `denominator` - An unsigned integer representing the denominator used to check if the remainder should be carried.
+///
+/// # Returns
+///
+/// * A result type:
+///    - `Ok` variant contains an instance of `DivisionResult` with fields `result` (the resulting vector after addition), `remainder` and `denominator`.
+///    - `Err` variant contains an error message indicating a mismatch in the lengths of the input vectors.
 pub fn long_add_same_len(
     a: &Vec<usize>,
     b: &Vec<usize>,
@@ -126,12 +180,38 @@ pub fn long_add_same_len(
     })
 }
 
+/// Resizes the given vector to a provided length by appending a specific padding value. If the vector is already longer, it does nothing.
+///
+/// # Arguments
+///
+/// * `vector` - The input mutable vector of unsigned integers to be resized.
+///
+/// * `to_length` - The desired length of the input vector after the operation.
+///
+/// * `pad_value` - The unsigned integer value to append to the vector if resizing is needed.
+///
+/// # Note
+///
+/// This is a mutating function, the passed vector will be directly updated.
 pub fn pad_right(vector: &mut Vec<usize>, to_length: usize, pad_value: usize) {
     if to_length > vector.len() {
         vector.resize(to_length, pad_value);
     }
 }
 
+/// Resizes the given vector to a provided length by prepending a specific padding value. If the vector is already longer, it does nothing.
+///
+/// # Arguments
+///
+/// * `arr` - The input vector of unsigned integers.
+///
+/// * `to_length` - The desired length of the vector after the operation.
+///
+/// * `val` - The unsigned integer value to prepend to the vector if resizing is needed.
+///
+/// # Returns
+///
+/// * Returns a new vector of unsigned integers that has been resized and possibly padded based on the inputs.
 pub fn pad_left(arr: Vec<usize>, to_length: usize, val: usize) -> Vec<usize> {
     // Calculate the number of padding elements needed
     let pad_len = to_length.saturating_sub(arr.len());
@@ -147,6 +227,25 @@ pub fn pad_left(arr: Vec<usize>, to_length: usize, val: usize) -> Vec<usize> {
     result
 }
 
+/// Creates a range of values between two vectors `a` and `b` spread evenly over `n` steps.
+///
+/// # Arguments
+///
+/// * `a` - A vector of unsigned integers, the starting point of the range.
+///
+/// * `b` - A vector of unsigned integers, the ending point of the range. Must be of the same length as `a`.
+///
+/// * `base` - The base of the number system being used. This represents the number of possible values each digit can have.
+///
+/// * `n` - A `NonZeroUsize` that specifies the number of steps. The values will be generated such that they lie evenly between `a` and `b`.
+///
+/// * `m` - An unsigned integer used as denominator in internal division operations.
+///
+/// # Returns
+///
+/// * Returns a Result type:
+///   - `Ok` variant that contains a vector of `DivisionResult`, which includes evenly spaced calculated values.
+///   - `Err` variant that contains an error message if `a` and `b` are not separable.
 pub fn long_linspace(
     a: Vec<usize>,
     b: Vec<usize>,
@@ -231,6 +330,16 @@ pub fn lexicographic_less_than_array(a: &[usize], b: &[usize]) -> bool {
     a.len() < b.len()
 }
 
+/// Takes a mutable vector of vectors (`strings`), and manipulates the vectors in it by chopping the successive digits using the `chop_digits` function.
+/// The sequences are processed based on their lexicographic order.
+///
+/// # Arguments
+///
+/// * `strings` - A mutable vector of vectors of unsigned integers.
+///
+/// # Returns
+///
+/// A vector of vectors of unsigned integers, where each vector has been modified by chopping off its successive digits.
 pub fn chop_successive_digits(strings: &mut Vec<Vec<usize>>) -> Vec<Vec<usize>> {
     let reversed = !lexicographic_less_than_array(&strings[0], &strings[1]);
     if reversed {
@@ -250,6 +359,7 @@ pub fn chop_successive_digits(strings: &mut Vec<Vec<usize>>) -> Vec<Vec<usize>> 
     result
 }
 
+/// A table for generating lexicographically spaced strings.
 pub struct SymbolTable {
     num2sym: Vec<char>,
     sym2num: HashMap<char, usize>,
@@ -257,6 +367,7 @@ pub struct SymbolTable {
 }
 
 impl SymbolTable {
+    /// Create a new symbol table given a vector of characters.
     pub fn new(symbols: Vec<char>) -> Self {
         let mut sym2num = HashMap::new();
         for (i, c) in symbols.iter().enumerate() {
@@ -272,26 +383,32 @@ impl SymbolTable {
         }
     }
 
+    /// Create a new symbol table from a string.
     pub fn from_str(symbols: &str) -> Self {
         Self::new(symbols.chars().collect())
     }
 
+    /// Creates a decimal symbol table (0-9).
     pub fn decimal() -> Self {
         Self::new(('0'..='9').collect())
     }
 
+    /// Creates an alphabetic symbol table (a-z).
     pub fn alphabetic() -> Self {
         Self::new(('a'..='z').collect())
     }
 
+    /// Creates a base36 symbol table (0-9, a-z).
     pub fn base36() -> Self {
         Self::new(('0'..='9').chain('a'..='z').collect())
     }
 
+    /// Creates a base62 symbol table (0-9, A-Z, a-z).
     pub fn base62() -> Self {
         Self::new(('0'..='9').chain('A'..='Z').chain('a'..='z').collect())
     }
 
+    /// Creates a hexadecimal symbol table (0-9, a-f).
     pub fn hex() -> Self {
         Self::new(('0'..='9').chain('a'..='f').collect())
     }
@@ -382,6 +499,22 @@ impl SymbolTable {
         Ok(pad_left(digits, places, 0))
     }
 
+    /// Generate a sequence of `n` intermediary strings between `start` and `end` that are approximately
+    /// equally spaced in lexicographic order as determined by the symbols in the SymbolTable. Each string
+    /// is represented in the current base of the SymbolTable.
+    ///
+    /// # Arguments
+    ///
+    /// * `n` - The number of intermediary strings to generate.
+    /// * `start` - An optional string as a lower bound for the resulting strings. If None,
+    /// this will default to the first character in the SymbolTable.
+    /// * `end` - An optional string as an upper bound for the resulting strings. If None,
+    /// this will default to a string consisting of k+7 instances of the last character in the SymbolTable
+    /// where k is the length of the `start` string.
+    ///
+    /// # Returns
+    ///
+    /// A result containing a vector of `n` strings if successful, or an error message if `n` is 0.
     pub fn mudder(
         &self,
         n: usize,
@@ -443,6 +576,21 @@ impl SymbolTable {
         Ok(strings)
     }
 
+    /// Generate a single intermediary string between `start` and `end` that is centrally placed
+    /// in lexicographic order as determined by the symbols in the SymbolTable. The string
+    /// is represented in the current base of the SymbolTable.
+    ///
+    /// # Arguments
+    ///
+    /// * `start` - An optional string as a lower bound for the resulting string. If None,
+    /// this will default to the first character in the SymbolTable.
+    /// * `end` - An optional string as an upper bound for the resulting string. If None,
+    /// this will default to a string consisting of k+6 instances of the last character in the SymbolTable
+    /// where k is the length of the `start` string.
+    ///
+    /// # Returns
+    ///
+    /// A result containing a single string if successful, or an error message if unable to create a string.
     pub fn mudder_one(
         &self,
         start: Option<&str>,

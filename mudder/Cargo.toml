@@ -4,6 +4,7 @@ version = "0.1.4"
 edition = "2021"
 description = "Generate lexicographically-spaced strings between two strings from pre-defined alphabets."
 license = "MIT"
+repository = "https://github.com/kevinhu/mudder"
 
 [dependencies]
 num-bigint = "0.4.4"
