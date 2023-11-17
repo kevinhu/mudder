@@ -2,7 +2,7 @@
 
 Generate lexicographically-spaced strings between two strings from pre-defined alphabets.
 
-This package is a rewrite of [Mudder.js](https://github.com/fasiha/mudderjs/tree/main) with a Rust core that is used to generate bindings to Python (via [Pyo3](https://github.com/PyO3/pyo3)) and JS/TS (via [wasm-pack](https://github.com/rustwasm/wasm-pack)).
+This package is a rewrite of [Mudder.js](https://github.com/fasiha/mudderjs/tree/main) with a Rust core that is used to generate bindings to Python (via [PyO3](https://github.com/PyO3/pyo3)) and JS/TS (via [wasm-pack](https://github.com/rustwasm/wasm-pack)).
 
 # Quickstart
 
