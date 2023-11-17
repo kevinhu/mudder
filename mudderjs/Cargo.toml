@@ -1,0 +1,16 @@
+[package]
+name = "mudderjs"
+version = "0.1.3"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+[lib]
+name = "mudderjs"
+crate-type = ["cdylib"]
+
+[dependencies]
+wasm-bindgen = "0.2.88"
+mudder = { path = "../mudder" }
+
+[dev-dependencies]
+wasm-bindgen-test = "0.3.38"

@@ -1,0 +1,8 @@
+{
+    "rust-analyzer.linkedProjects": [
+        "./mudder/Cargo.toml",
+        "./mudderjs/Cargo.toml",
+        "./mudderpy/Cargo.toml",
+    ],
+    "editor.formatOnSave": true
+}
