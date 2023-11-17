@@ -18,23 +18,27 @@ impl SymbolTable {
     pub fn mudder(
         &self,
         amount: usize,
-        a: Option<String>,
-        b: Option<String>,
+        start: Option<String>,
+        end: Option<String>,
     ) -> Result<Vec<String>, JsValue> {
         match self.table.mudder(
             amount,
-            a.as_ref().map(|s| &*s.as_str()),
-            b.as_ref().map(|s| &*s.as_str()),
+            start.as_ref().map(|s| &*s.as_str()),
+            end.as_ref().map(|s| &*s.as_str()),
         ) {
             Ok(r) => Ok(r),
             Err(e) => Err(JsValue::from_str(e)),
         }
     }
 
-    pub fn mudder_one(&self, a: Option<String>, b: Option<String>) -> Result<String, JsValue> {
+    pub fn mudder_one(
+        &self,
+        start: Option<String>,
+        end: Option<String>,
+    ) -> Result<String, JsValue> {
         match self.table.mudder_one(
-            a.as_ref().map(|s| &*s.as_str()),
-            b.as_ref().map(|s| &*s.as_str()),
+            start.as_ref().map(|s| &*s.as_str()),
+            end.as_ref().map(|s| &*s.as_str()),
         ) {
             Ok(r) => Ok(r),
             Err(e) => Err(JsValue::from_str(e)),
@@ -62,6 +66,12 @@ impl SymbolTable {
     pub fn base62() -> Result<SymbolTable, JsValue> {
         Ok(Self {
             table: NativeSymbolTable::base62(),
+        })
+    }
+
+    pub fn hex() -> Result<SymbolTable, JsValue> {
+        Ok(Self {
+            table: NativeSymbolTable::hex(),
         })
     }
 }

@@ -16,15 +16,20 @@ impl SymbolTable {
         }
     }
 
-    pub fn mudder(&self, amount: usize, a: Option<&str>, b: Option<&str>) -> PyResult<Vec<String>> {
-        match self.table.mudder(amount, a, b) {
+    pub fn mudder(
+        &self,
+        amount: usize,
+        start: Option<&str>,
+        end: Option<&str>,
+    ) -> PyResult<Vec<String>> {
+        match self.table.mudder(amount, start, end) {
             Ok(r) => Ok(r),
             Err(e) => Err(PyRuntimeError::new_err(e)),
         }
     }
 
-    pub fn mudder_one(&self, a: Option<&str>, b: Option<&str>) -> PyResult<String> {
-        match self.table.mudder_one(a, b) {
+    pub fn mudder_one(&self, start: Option<&str>, end: Option<&str>) -> PyResult<String> {
+        match self.table.mudder_one(start, end) {
             Ok(r) => Ok(r),
             Err(e) => Err(PyRuntimeError::new_err(e)),
         }
@@ -38,7 +43,7 @@ impl SymbolTable {
     }
 
     #[staticmethod]
-    pub fn alphabet() -> PyResult<Self> {
+    pub fn alphabetic() -> PyResult<Self> {
         Ok(Self {
             table: NativeSymbolTable::alphabetic(),
         })
@@ -55,6 +60,13 @@ impl SymbolTable {
     pub fn base62() -> PyResult<Self> {
         Ok(Self {
             table: NativeSymbolTable::base62(),
+        })
+    }
+
+    #[staticmethod]
+    pub fn hex() -> PyResult<Self> {
+        Ok(Self {
+            table: NativeSymbolTable::hex(),
         })
     }
 }

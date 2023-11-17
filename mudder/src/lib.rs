@@ -292,6 +292,10 @@ impl SymbolTable {
         Self::new(('0'..='9').chain('A'..='Z').chain('a'..='z').collect())
     }
 
+    pub fn hex() -> Self {
+        Self::new(('0'..='9').chain('a'..='f').collect())
+    }
+
     pub fn number_to_digits(&self, mut num: usize) -> Vec<usize> {
         // Unwrap the base, defaulting to self.base if None.
         let mut digits = Vec::new();
@@ -381,34 +385,34 @@ impl SymbolTable {
     pub fn mudder(
         &self,
         n: usize,
-        a: Option<&str>,
-        b: Option<&str>,
+        start: Option<&str>,
+        end: Option<&str>,
     ) -> Result<Vec<String>, &'static str> {
         let n = NonZeroUsize::new(n).ok_or("n must be greater than 0")?;
 
-        let a_vec = match a {
-            Some(a) => a.chars().collect(),
+        let start_vec = match start {
+            Some(start) => start.chars().collect(),
             None => vec![self.num2sym[0].clone()],
         };
 
-        let b_vec = match b {
-            Some(b) => b.chars().collect(),
-            None => vec![self.num2sym[self.num2sym.len() - 1].clone(); a_vec.len() + 6],
+        let end_vec = match end {
+            Some(end) => end.chars().collect(),
+            None => vec![self.num2sym[self.num2sym.len() - 1].clone(); start_vec.len() + 6],
         };
 
         assert!(
-            !a_vec.is_empty(),
+            !start_vec.is_empty(),
             "Empty start string not supported. Use None instead."
         );
         assert!(
-            !b_vec.is_empty(),
+            !end_vec.is_empty(),
             "Empty end string not supported. Use None instead."
         );
 
         let num_divisions = n.get() + 1;
 
-        let ad = self.chars_to_digits(a_vec);
-        let bd = self.chars_to_digits(b_vec);
+        let ad = self.chars_to_digits(start_vec);
+        let bd = self.chars_to_digits(end_vec);
         let mut intermediate_digits =
             long_linspace(ad.clone(), bd.clone(), self.base, n, num_divisions)?;
 
@@ -439,8 +443,12 @@ impl SymbolTable {
         Ok(strings)
     }
 
-    pub fn mudder_one(&self, a: Option<&str>, b: Option<&str>) -> Result<String, &'static str> {
-        let strings = self.mudder(1, a, b)?;
+    pub fn mudder_one(
+        &self,
+        start: Option<&str>,
+        end: Option<&str>,
+    ) -> Result<String, &'static str> {
+        let strings = self.mudder(1, start, end)?;
         Ok(strings[0].clone())
     }
 }
