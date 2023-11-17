@@ -1,6 +1,6 @@
 [package]
 name = "mudderjs"
-version = "0.1.4"
+version = "0.1.5"
 edition = "2021"
 description = "Generate lexicographically-spaced strings between two strings from pre-defined alphabets."
 license = "MIT"
